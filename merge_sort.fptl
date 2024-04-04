@@ -1,0 +1,128 @@
+Scheme mergeSort
+{
+	
+	P = [1].toInt;          //number of performers
+    Arr_size = [2].toInt;   // size of array
+    Inp = [3];              //input file 
+    Out = [4];              //output file
+		
+	Array = ([1].EmptyArray * [2]).arrayFromFile.(id -> id, false * "Error. File not found!".print);		
+    EmptyArray = ([1] * 0.0).arrayCreate;
+    
+	
+	@ =  (((Arr_size * Inp).Array * P).Sort * Out).createFile;    
+        //((Arr_size * Inp).Array * P).Sort.print;    
+ 
+    Fun Sort{
+        Array = [1];
+        P_parallel = [2];
+        Size = Array.arrayLen;
+        Buf_Array = (Size * 0.0).arrayCreate;
+        
+        @ = (Size * 1).greater -> (Array * Buf_Array * Buf_Array * 0 * Size * P_parallel).SortRec.[1],
+            Array;
+    
+        Fun SortRec{
+            MainArray = [1];
+            Left = [2];
+            Right = [3];
+            Start = [4];
+            End = [5];
+            P_parallel = [6];
+            
+            LEFT_OP_CNT = (P_parallel * 1).equal -> 1, (P_parallel * 2).div;
+            RIGHT_OP_CNT = (P_parallel * 1).equal -> 1,(P_parallel * LEFT_OP_CNT).sub;
+            
+            Middle = ((Start * End).add * 2).div;
+            Size = (End * Start).sub;
+            LenLeft = (Middle * Start).sub;          
+            LenRight = (End * Middle).sub;
+            
+            sort_left = (LenLeft * 1).equal ->
+                (Left * Start * (MainArray * Start).arrayGet).arraySet * MainArray, 
+                (MainArray * Left * Right * Start * Middle * LEFT_OP_CNT).SortRec;
+                                    
+            sort_right = (LenRight * 1).equal ->
+                (Right * Middle * (MainArray * Middle).arrayGet).arraySet * Right,
+                (MainArray * Left * Right * Middle * End * RIGHT_OP_CNT).SortRec;
+
+            @ = (P_parallel  * 1).greater -> 
+                (sort_left * sort_right * Start * End).mergeTwoArrays, 
+                (id * sort_left).([-2] * [-1] * sort_right * Start * End).mergeTwoArrays; 
+
+            Fun mergeTwoArrays{
+                Left = [1];
+                ResultArray = [2];
+                Right = [3];
+                Start = [5];
+                End = [6];
+                Middle = ((Start * End).add * 2).div;
+                
+                @ = (Left * Right * ResultArray * Start * Middle * Middle * End * Start).merge;
+                
+                Fun merge{
+                    LeftPartArray = [1];
+                    RightPartArray = [2];
+                    ResultArray = [3];
+                    Left = [4];
+                    Right = [5];
+                    LeftEnd = [6];
+                    RightEnd = [7];
+                    ResultIdx = [8];
+                             
+                    LeftEl = (LeftPartArray * Left).arrayGet;
+                    RightEl = (RightPartArray * Right).arrayGet;
+                    
+                    @ = (Left * LeftEnd).gequal-> 
+                        (RightPartArray * ResultArray * Right * RightEnd * ResultIdx).Copy * LeftPartArray,
+                        (Right*RightEnd).gequal -> 
+                            (LeftPartArray * ResultArray * Left * LeftEnd * ResultIdx).Copy * LeftPartArray,
+                            (LeftEl * RightEl).less -> 
+                                (
+                                    LeftPartArray
+                                    * RightPartArray 
+                                    * (ResultArray * ResultIdx * LeftEl).arraySet 
+                                    * (Left * 1).add
+                                    * Right
+                                    * LeftEnd
+                                    * RightEnd
+                                    * (ResultIdx * 1).add                      
+                                ).merge,
+                                (
+                                    LeftPartArray
+                                    * RightPartArray 
+                                    * (ResultArray * ResultIdx * RightEl).arraySet
+                                    * Left
+                                    * (Right * 1).add
+                                    * LeftEnd
+                                    * RightEnd
+                                    * (ResultIdx * 1).add                      
+                                ).merge;                                  
+                }
+                Fun Copy{
+                    MainArray = [1];
+                    ResultArray = [2];
+                    First = [3];
+                    Last = [4];
+                    ResultIdx = [5];
+
+                    Element = (MainArray * First).arrayGet;
+                    @ = (First * Last).gequal -> 
+                        ResultArray,
+                        (
+                            MainArray
+                            * (ResultArray * ResultIdx * Element).arraySet 
+                            * (First * 1).add
+                            * Last
+                            * (ResultIdx * 1).add  
+                        ).Copy;
+                }
+            }
+        }
+    }
+}
+
+
+Application
+
+%mergeSort(1, 100, "100.txt", "output100.txt")
